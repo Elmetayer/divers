@@ -6,6 +6,5 @@ import json
 uploaded_file = st.file_uploader("Choose a file")
 if uploaded_file is not None:
 
-    d = json.load(f)
-    print(d)
-    st.write(dataframe)
+    json_content = json.load(uploaded_file)
+    st.write(json_content)
