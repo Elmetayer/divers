@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from io import StringIO
 import json
 
@@ -7,6 +8,7 @@ liste_participants = None
 config = {
     'exclusions':[],
     'obligations':[]}
+df_resultats = None
 
 def secret_santa(liste_participants, config):
     resultats = []
@@ -47,6 +49,13 @@ if uploaded_config_file is not None:
 if st.button('Générer') and liste_participants is not None:
     resultats = secret_santa(liste_participants, config)
     df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'])
+    st.write('résultats:')
     st.write(df_resultats)
+    st.download_button(
+        label = 'télécharger les résultats',
+        data = df_resultats.to_csv().encode('utf-8'),
+        file_name = 'secret_santa.csv',
+        mime = 'text/csv',
+    )
 
              
