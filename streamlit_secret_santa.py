@@ -37,12 +37,13 @@ def secret_santa(liste_participants, config):
                 continue
     return(resultats)
 
-uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False)
+uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False, help = 'liste des noms des participants au format csv')
 if uploaded_participants_file is not None:
     df_participants = pd.read_csv(uploaded_participants_file, header=None, names=['participants'])
     liste_participants = df_participants['participants'].to_list()
 
-uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_multiple_files = False)
+uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_multiple_files = False, 
+                                        help = 'fichier json avec une clé "exclusions" et une clé "obligations" qui contiennent une liste de couples (offrant, recevant)')
 if uploaded_config_file is not None:
     config = json.load(uploaded_config_file)
 
