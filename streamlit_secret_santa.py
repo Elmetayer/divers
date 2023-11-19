@@ -3,8 +3,13 @@ import pandas as pd
 from io import StringIO
 import json
 
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
+uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False)
+if ploaded_participants_file is not None:
+    df_participants = pd.read_csv(ploaded_participants_file)
+    st.write(df_participants)
 
-    json_content = json.load(uploaded_file)
+uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_multiple_files = False)
+if uploaded_config_file is not None:
+    json_content = json.load(uploaded_config_file)
     st.write(json_content)
+             
