@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from io import StringIO
 import json
+import os
+import base64
 
 liste_participants = None
 config = {
@@ -37,7 +39,16 @@ def secret_santa(liste_participants, config):
                 continue
     return(resultats)
 
+def get_file_downloader_html(bin_file, file_label='File'):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    bin_str = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{os.path.basename(bin_file)}">télécharger un exemple {file_label}</a>'
+    st.markdown(href, unsafe_allow_html=True)
+
 st.title('Générateur secret santa')
+
+get_file_downloader_html('participants_exemple.csv', 'participants.csv')
 
 uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False, help = 'liste des noms des participants au format csv')
 if uploaded_participants_file is not None:
@@ -48,6 +59,9 @@ uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_m
                                         help = 'fichier json avec une clé "exclusions" et une clé "obligations" qui contiennent une liste de couples (offrant, recevant)')
 if uploaded_config_file is not None:
     config = json.load(uploaded_config_file)
+
+get_file_downloader_html('config_exemple.json', 'config.json')
+
 
 if st.button('Générer') and liste_participants is not None:
     resultats = secret_santa(liste_participants, config)
