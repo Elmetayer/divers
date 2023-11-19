@@ -4,7 +4,9 @@ from io import StringIO
 import json
 
 liste_participants = None
-config = None
+config = {
+    'exclusions':[],
+    'obligations':[]}
 
 def secret_santa(liste_participants, config):
     resultats = []
@@ -36,16 +38,15 @@ def secret_santa(liste_participants, config):
 uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False)
 if uploaded_participants_file is not None:
     df_participants = pd.read_csv(uploaded_participants_file, header=None, names=['participants'])
-    liste_participants = df_participants['participants']
+    liste_participants = df_participants['participants'].to_list()
 
 uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_multiple_files = False)
 if uploaded_config_file is not None:
     config = json.load(uploaded_config_file)
 
-if st.button('Générer') and liste_participants is not None and config is not None:
+if st.button('Générer') and liste_participants is not None:
     resultats = secret_santa(liste_participants, config)
     df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'])
     st.write(df_resultats)
-else:
-    st.write('en attente des données ...')
+
              
