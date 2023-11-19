@@ -1,0 +1,10 @@
+{"exclusions":[
+    ["Papa", "Maman"],
+    ["Maman", "Papa"],
+    ["Cecile", "Bruno"],
+    ["Bruno", "Cecile"],
+    ["Anne", "Didier"],
+    ["Didier", "Anne"]],
+"obligations":[
+    ["Bruno", "Papa"],
+    ["Didier", "Maman"]]}
