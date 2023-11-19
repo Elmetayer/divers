@@ -37,6 +37,8 @@ def secret_santa(liste_participants, config):
                 continue
     return(resultats)
 
+st.title('Générateur secret santa')
+
 uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False, help = 'liste des noms des participants au format csv')
 if uploaded_participants_file is not None:
     df_participants = pd.read_csv(uploaded_participants_file, header=None, names=['participants'])
