@@ -14,10 +14,10 @@ config = {
 df_resultats = None
 
 # données exemples
-file_participant_exemple = 'participants.csv'
+file_participant_exemple = 'participants_exemple.csv'
 df_participant_exemple = pd.read_csv(file_participant_exemple, header=None, names=['participants'])
 liste_participants_exemple = df_participant_exemple['participants'].to_list()
-file_config_exemple = 'config.json'
+file_config_exemple = 'config_exemple.json'
 config_exemple = json.load(file_config_exemple)
 
 # fonction pour générer les résultats du secret santa
@@ -55,7 +55,7 @@ def secret_santa(liste_participants, config):
     return(resultats)
 
 # fonction qui génère un lien de téléchargement
-def get_file_downloader_html(bin_file, file_label='File'):
+def get_file_downloader_html(bin_file, file_label):
     with open(bin_file, 'rb') as f:
         data = f.read()
     bin_str = base64.b64encode(data).decode()
@@ -72,7 +72,7 @@ if uploaded_participants_file is not None:
     liste_participants = df_participants['participants'].to_list()
 
 # téléchargement d'un fichier exemple de liste de participants
-get_file_downloader_html('participants_exemple.csv', file_participant_exemple)
+get_file_downloader_html(file_participant_exemple, 'exemple de fichier participants')
 
 # uload du fichier de configuration
 uploaded_config_file = st.file_uploader('Configuration', type = 'json', accept_multiple_files = False, 
@@ -81,7 +81,7 @@ if uploaded_config_file is not None:
     config = json.load(uploaded_config_file)
 
 # téléchargement d'un fichier exemple de configuration
-get_file_downloader_html('config_exemple.json', )
+get_file_downloader_html(file_config_exemple, 'exemple de fichier config')
 
 # bouton pour lancer le calcul du secret santa
 if st.button('Générer') :
