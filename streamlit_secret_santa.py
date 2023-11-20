@@ -45,7 +45,7 @@ def secret_santa(liste_participants, config):
     obligations = config['obligations'].copy()
     offrants_restant = liste_participants.copy()
     for offrant, recevant in obligations:
-        # on enlève les arrêtes qui ne sont pas celui de l'obligation
+        # on enlève toutes les arrêtes qui ne sont pas celle de l'obligation
         G.remove_edges_from([edge for edge in G.edges if ((edge[0] == offrant and edge[1] != recevant) or (edge[0] != offrant and edge[1] == recevant))])
         offrants_restant.pop(offrants_restant.index(offrant))
     # on parcours au hasard la liste des participants
@@ -53,8 +53,8 @@ def secret_santa(liste_participants, config):
         offrant_a_traiter = offrants_restant[i_offrant_a_traiter]
         # on tire au hasard les recevants restants parmi les target 
         recevant_a_traiter = list(G[offrant_a_traiter])[np.random.randint(len(G[offrant_a_traiter]))]
-        # on enlève les recevants qui ne sont pas celui de l'obligation
-        G.remove_edges_from([(offrant_a_traiter, target) for target in G[offrant_a_traiter] if target != recevant_a_traiter])
+        # on enlève toutes les arrêtes qui ne sont pas celle retenue
+        G.remove_edges_from([edge for edge in G.edges if ((edge[0] == offrant_a_traiter and edge[1] != recevant_a_traiter) or (edge[0] != offrant_a_traiter and edge[1] == recevant_a_traiter))])
     return(list(G.edges))
 
 # fonction qui génère un lien de téléchargement
