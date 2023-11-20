@@ -24,41 +24,6 @@ with open(file_config_exemple) as f:
     config_exemple = json.load(f)
 
 # fonction pour générer les résultats du secret santa
-# /!\ ne fonctionne pas bien
-def secret_santa_old(liste_participants, config):
-    '''
-    la fonction prend en arguments une liste de participants, et une configuration qui définit:
-    - les relations offrant > recevant prédéfinies
-    - les relations offrant > recevant à exclure  
-    elle renvoie une liste de couples (offrant, recevant)
-    '''
-    resultats = []
-    offrants_restant = liste_participants.copy()
-    recevants_restant = liste_participants.copy()
-    exclusions = config['exclusions'].copy()
-    obligations = config['obligations'].copy()
-
-    # on traite d'abord les obligations
-    for offrant, recevant in obligations:
-        resultats.append((offrant, recevant))
-        offrants_restant.pop(offrants_restant.index(offrant))
-        recevants_restant.pop(recevants_restant.index(recevant))
-        
-    # on parcours au hasard la liste des participants
-    for i_donnant_a_traiter in np.random.permutation(len(offrants_restant)):
-        donnant_a_traiter = offrants_restant[i_donnant_a_traiter]
-        # on tire au hasard les recevants restants
-        for i_recevant_possible in np.random.permutation(len(recevants_restant)):
-            # vérification des exclusions
-            if (donnant_a_traiter, recevants_restant[i_recevant_possible]) not in exclusions and donnant_a_traiter != recevants_restant[i_recevant_possible]:
-                resultats.append((donnant_a_traiter, recevants_restant[i_recevant_possible]))
-                recevants_restant.pop(i_recevant_possible)
-                break
-            else:
-                continue
-    return(resultats)
-
-# fonction utilisant les graphes
 def secret_santa(liste_participants, config):
     '''
     la fonction prend en arguments une liste de participants, et une configuration qui définit:
