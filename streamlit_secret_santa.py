@@ -5,6 +5,8 @@ from io import StringIO
 import json
 import os
 import base64
+import networkx as nx
+import itertools
 
 # données uploadées, à None par défaut
 liste_participants = None
@@ -22,7 +24,8 @@ with open(file_config_exemple) as f:
     config_exemple = json.load(f)
 
 # fonction pour générer les résultats du secret santa
-def secret_santa(liste_participants, config):
+# /!\ ne fonctionne pas bien
+def secret_santa_old(liste_participants, config):
     '''
     la fonction prend en arguments une liste de participants, et une configuration qui définit:
     - les relations offrant > recevant prédéfinies
@@ -54,6 +57,40 @@ def secret_santa(liste_participants, config):
             else:
                 continue
     return(resultats)
+
+# fonction utilisant les graphes
+def secret_santa(liste_participants, config):
+    '''
+    la fonction prend en arguments une liste de participants, et une configuration qui définit:
+    - les relations offrant > recevant prédéfinies
+    - les relations offrant > recevant à exclure  
+    elle renvoie une liste de couples (offrant, recevant)
+    '''
+    # création du graphe avec les participants
+    exclusions = config['exclusions'].copy()
+    edge_list = pd.DataFrame(
+        [(item[0], item[1]) for item in itertools.product(liste_participants, liste_participants) if item[0] != item[1] and [item[0], item[1]] not in exclusions], 
+        columns = ['offrant', 'recevant'])
+    G = nx.from_pandas_edgelist(
+        edge_list, 
+        source = 'offrant',
+        target =  'recevant',
+        create_using = nx.DiGraph())
+    # on traite d'abord les obligations
+    obligations = config['obligations'].copy()
+    offrants_restant = liste_participants.copy()
+    for offrant, recevant in obligations:
+        # on enlève les recevants qui ne sont pas celui de l'obligation
+        G.remove_edges_from([(offrant, target) for target in G[offrant] if target != recevant])
+        offrants_restant.pop(offrants_restant.index(offrant))
+    # on parcours au hasard la liste des participants
+    for i_offrant_a_traiter in np.random.permutation(len(offrants_restant)):
+        offrant_a_traiter = offrants_restant[i_offrant_a_traiter]
+        # on tire au hasard les recevants restants parmi les target 
+        recevant_a_traiter = list(G[offrant_a_traiter])[np.random.randint(len(G[offrant_a_traiter]))]
+        # on enlève les recevants qui ne sont pas celui de l'obligation
+        G.remove_edges_from([(offrant_a_traiter, target) for target in G[offrant_a_traiter] if target != recevant_a_traiter])
+    return(list(G.edges))
 
 # fonction qui génère un lien de téléchargement
 def get_file_downloader_html(bin_file, file_label):
