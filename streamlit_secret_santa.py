@@ -18,7 +18,8 @@ file_participant_exemple = 'participants_exemple.csv'
 df_participant_exemple = pd.read_csv(file_participant_exemple, header=None, names=['participants'])
 liste_participants_exemple = df_participant_exemple['participants'].to_list()
 file_config_exemple = 'config_exemple.json'
-config_exemple = json.load(file_config_exemple)
+with open(file_config_exemple) as f:
+    config_exemple = json.load(f)
 
 # fonction pour générer les résultats du secret santa
 def secret_santa(liste_participants, config):
