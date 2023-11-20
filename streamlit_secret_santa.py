@@ -46,7 +46,7 @@ def secret_santa(liste_participants, config):
     offrants_restant = liste_participants.copy()
     for offrant, recevant in obligations:
         # on enlève les arrêtes qui ne sont pas celui de l'obligation
-        G.remove_edges_from([(offrant, target) for edge in G.edges if ((edge[0] == recevant and edge[1] != recevant) or (edge[0] != recevant and edge[1] == recevant))])
+        G.remove_edges_from([edge for edge in G.edges if ((edge[0] == recevant and edge[1] != recevant) or (edge[0] != recevant and edge[1] == recevant))])
         offrants_restant.pop(offrants_restant.index(offrant))
     # on parcours au hasard la liste des participants
     for i_offrant_a_traiter in np.random.permutation(len(offrants_restant)):
