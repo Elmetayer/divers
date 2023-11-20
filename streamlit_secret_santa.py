@@ -24,7 +24,7 @@ with open(file_config_exemple) as f:
     config_exemple = json.load(f)
 
 # fonction pour générer les résultats du secret santa
-def secret_santa_graph(liste_participants, config):
+def secret_santa(liste_participants, config):
     '''
     la fonction prend en arguments une liste de participants, et une configuration qui définit:
     - les relations offrant > recevant prédéfinies
