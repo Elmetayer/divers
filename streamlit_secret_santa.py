@@ -7,6 +7,7 @@ import os
 import base64
 import networkx as nx
 import itertools
+import time
 
 # données uploadées, à None par défaut
 liste_participants = None
@@ -24,7 +25,7 @@ with open(file_config_exemple) as f:
     config_exemple = json.load(f)
 
 # fonction pour générer les résultats du secret santa
-def secret_santa(liste_participants, config):
+def secret_santa(liste_participants, config, timeout_min = 1):
     '''
     la fonction prend en arguments une liste de participants, et une configuration qui définit:
     - les relations offrant > recevant prédéfinies
@@ -54,7 +55,15 @@ def secret_santa(liste_participants, config):
     cadeaux_a_faire = len(liste_participants) - len(obligations)
     parcours_offrant = []
     parcours_recevant = []
+    # initialisation du timeout
+    timeout = time.time() + 60*timeout_min
+    # initialisation du message
+    message = ""
+    
     while len(parcours_offrant) < cadeaux_a_faire and len(parcours_recevant) < cadeaux_a_faire:
+        # on arrête la boucle si le temps dépasse la limite
+        if time.time() > timeout:
+            break
         offrants_possibles = [offrant for offrant in liste_participants if (offrant not in parcours_offrant and offrant not in offrants_obliges)]
         offrant_a_traiter = offrants_possibles[np.random.randint(len(offrants_possibles))]
         recevants_possibles = [recevant for recevant in list(G[offrant_a_traiter]) if (recevant not in parcours_recevant and recevant not in recevants_obliges)]
@@ -67,7 +76,12 @@ def secret_santa(liste_participants, config):
         else:
             # retour arrière
             nx.set_edge_attributes(G, {(parcours_offrant.pop(), parcours_recevant.pop()): {'retenu': 0}})
-    return([(offrant, recevant) for offrant, recevant, edge in G.edges(data=True) if edge['retenu'] == 1])
+    
+    if len(parcours_offrant) < cadeaux_a_faire and len(parcours_recevant) < cadeaux_a_faire:
+        message = "solution trouvée"
+    else:
+        message = 'pas de solution trouvée'
+    return(message, [(offrant, recevant) for offrant, recevant, edge in G.edges(data=True) if edge['retenu'] == 1])
 
 # fonction qui génère un lien de téléchargement
 def get_file_downloader_html(bin_file, file_label):
@@ -101,12 +115,13 @@ get_file_downloader_html(file_config_exemple, 'exemple de fichier config')
 # bouton pour lancer le calcul du secret santa
 if st.button('Générer') :
     if liste_participants is not None:
-        resultats = secret_santa(liste_participants, config)
+        message, resultats = secret_santa(liste_participants, config)
         st.write('résultats:')
     else:
         # s'il n'y a pas de fichier uploadé, on génère avec les exemples
-        resultats = secret_santa(liste_participants_exemple, config_exemple)
-        st.write('pas de fichiers uploadés, résultats avec les données exemple:')
+        message, resultats = secret_santa(liste_participants_exemple, config_exemple)
+        st.write('pas de fichiers uploadés, résultats avec les données exemple')
+    st.write(message)
     df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'])
     st.write(df_resultats)
     st.download_button(
