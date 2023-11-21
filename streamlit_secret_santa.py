@@ -77,7 +77,7 @@ def secret_santa(liste_participants, config, timeout_min = 1):
             # retour arrière
             nx.set_edge_attributes(G, {(parcours_offrant.pop(), parcours_recevant.pop()): {'retenu': 0}})
     
-    if len(parcours_offrant) < cadeaux_a_faire and len(parcours_recevant) < cadeaux_a_faire:
+    if len(parcours_offrant) == cadeaux_a_faire and len(parcours_recevant) == cadeaux_a_faire:
         message = "solution trouvée"
     else:
         message = 'pas de solution trouvée'
