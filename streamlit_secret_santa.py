@@ -116,11 +116,10 @@ get_file_downloader_html(file_config_exemple, 'exemple de fichier config')
 if st.button('Générer') :
     if liste_participants is not None:
         message, resultats = secret_santa(liste_participants, config)
-        st.write('résultats:')
     else:
         # s'il n'y a pas de fichier uploadé, on génère avec les exemples
         message, resultats = secret_santa(liste_participants_exemple, config_exemple)
-        st.write('pas de fichiers uploadés, résultats avec les données exemple')
+        st.write('pas de fichiers uploadés, résultats calculés avec les données exemple')
     st.write(message)
     df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'])
     st.write(df_resultats)
