@@ -126,11 +126,11 @@ if st.button('Générer') :
         message, resultats = secret_santa(liste_participants_exemple, config_exemple)
         st.write('pas de fichiers uploadés, résultats calculés avec les données exemple')
     st.write(message)
-    df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'], index=False)
+    df_resultats = pd.DataFrame(resultats, columns = ['offrant', 'recevant'])
     st.write(df_resultats)
     st.download_button(
         label = 'télécharger les résultats',
-        data = df_resultats.to_csv(sep=";").encode('utf-8'),
+        data = df_resultats.to_csv(sep=";", index=False).encode('utf-8'),
         file_name = 'secret_santa.csv',
         mime = 'text/csv',
     )
