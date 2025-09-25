@@ -94,6 +94,11 @@ def get_file_downloader_html(bin_file, file_label):
 # titre de l'application
 st.title('Générateur secret santa')
 
+# description de l'application et instructions
+st.text("Pour générer des couples (offrant, recevant) au hasard !")
+st.text("Il faut définir en entrée au moins la liste des participants (format csv, voir l'exemple fourni)")
+st.text("Un paramétrage supplémentaire permet de définir : des couples (offrant, recevant) prédéfinis (qui seront conservés tels quels dans les résultats), et des couples à exclure")  
+
 # upload du fichier avec la liste des participants
 uploaded_participants_file = st.file_uploader('Participants', type = 'csv', accept_multiple_files = False, help = 'liste des noms des participants au format csv')
 if uploaded_participants_file is not None:
